@@ -1,0 +1,120 @@
+<div class="container vh-100">
+  <div class="row justify-content-center h-100">
+    <div class="card my-auto shadow">
+      <div class="card-body px-5">
+        <div class="text-center">
+          <fa-icon [icon]="faLock" class="fa-3x"></fa-icon>
+        </div>
+        <div class="text-center">
+          <h2>Welcome</h2>
+        </div>
+        <p style="color: lightslategray; text-align: center">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please enter your
+          Registration
+          details&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </p>
+        <form [formGroup]="regisform" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label> UserName:</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter Your UserName"
+              formControlName="userName"
+              [ngClass]="{
+                'is-invalid': submitted && regisform.controls['userName'].errors
+              }"
+            />
+            <div
+              *ngIf="submitted && regisform.controls['userName'].errors"
+              class="text-danger"
+            >
+              <div
+                *ngIf="
+                  submitted && regisform.controls['userName'].errors['required']
+                "
+              >
+                User Name is Required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email:</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter Your Email"
+              formControlName="emailAddress"
+              [ngClass]="{
+                'is-invalid':
+                  submitted && regisform.controls['emailAddress'].errors
+              }"
+            />
+            <div
+              *ngIf="submitted && regisform.controls['emailAddress'].errors"
+              class="text-danger"
+            >
+              <div
+                *ngIf="
+                  submitted &&
+                  regisform.controls['emailAddress'].errors['required']
+                "
+              >
+                Email is Required
+              </div>
+              <div
+                *ngIf="
+                  submitted &&
+                  regisform.controls['emailAddress'].errors['email']
+                "
+              >
+                Email is not Valid
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Password:</label>
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Enter Your password"
+              formControlName="password"
+              [ngClass]="{
+                'is-invalid': submitted && regisform.controls['password'].errors
+              }"
+            />
+            <div
+              *ngIf="submitted && regisform.controls['password'].errors"
+              class="text-danger"
+            >
+              <div
+                *ngIf="
+                  submitted && regisform.controls['password'].errors['required']
+                "
+              >
+                Password is Required
+              </div>
+              <div
+                *ngIf="
+                  submitted &&
+                  regisform.controls['password'].errors['minlength']
+                "
+              >
+                Password Should be atleast 5 Character
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <br />
+            <button class="btn btn-primary">Registration</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer text-right">
+        <small><a routerLink="../login">Already Have Account</a></small>
+      </div>
+    </div>
+  </div>
+</div>
