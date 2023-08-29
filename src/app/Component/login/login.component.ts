@@ -66,8 +66,8 @@ export class LoginComponent {
       (error: HttpErrorResponse) => {
         console.log(error); // Log the error response to the console
 
-        if (error.status === 404) {
-          this.errorMessage = "User not registered.";
+        if (error.error.error_description) {
+          this.errorMessage = error.error.error_description;
         } else if (error.error) {
           // Display the error message to the user
           this.errorMessage = error.error;

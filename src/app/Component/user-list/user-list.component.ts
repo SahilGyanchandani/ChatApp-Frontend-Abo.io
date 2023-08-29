@@ -21,8 +21,8 @@ export class UserListComponent implements OnInit {
   newMessage: string = ''; // Holds the message content from the textbox
   selectedUserId: string | null = null; // The receiver's userID
   editingMessageId: string | null = null; // The message ID being edited
-  // Add the editedMessageContent property
-  editedMessageContent: string = '';
+  editedMessageContent = '';
+  isEditingPlaceholderVisible = true; // Initially show the placeholder
   // Add properties for the context menu
   deletingMessageId: string | null = null;
   showContextMenu: boolean = false;
@@ -31,7 +31,7 @@ export class UserListComponent implements OnInit {
   private connection!: HubConnection;
 
 
-  constructor(private userService: LoginServiceService, private router: Router) {
+  constructor(private userService: LoginServiceService, private route: Router) {
     this.userService.onUserList().subscribe((data) => {
       this.Users = data;
       console.log(this.Users);
@@ -66,6 +66,14 @@ export class UserListComponent implements OnInit {
     })
   }
 
+  logout() {
+    this.userService.logout().subscribe((data) => {
+      //Clear the token from local storage
+      localStorage.removeItem('token');
+      //redirect to login page
+      this.route.navigateByUrl('/login');
+    })
+  }
 
   onSearchInputChange(): void {
     if (this.searchQuery.trim() === '') {
@@ -75,9 +83,10 @@ export class UserListComponent implements OnInit {
       // If there's a search query, make an API call to get the search results
       this.userService.searchConversation(this.searchQuery).subscribe(
         (response: any) => {
-          if (response && response.messages && Array.isArray(response.messages)) {
-            // If the response contains a 'messages' property that is an array
-            this.searchResults = response.messages;
+          console.log(response);
+
+          if (response) {
+            this.searchResults = response;
 
           } else {
             // Handle unexpected response format
@@ -127,7 +136,7 @@ export class UserListComponent implements OnInit {
     // Construct the message object to be sent to the backend
     const newMsg: MessageSend = {
       content: this.newMessage.trim(),
-      receiverID: this.selectedUserId,
+      receiverId: this.selectedUserId,
       // Use selectedUserId as the recipient's receiverID
     };
 
@@ -169,11 +178,14 @@ export class UserListComponent implements OnInit {
 
   acceptEdit(id: string, editedContent: string): void {
     // Find the message with the given messageId
-    const messageToUpdate = this.Msg.find((message) => message.id === id);
+    const messageToUpdate = this.Msg.find((message) => message.messageId === id);
 
     if (!messageToUpdate) {
       console.error('Message not found for editing.');
       return;
+    }
+    else {
+      alert('Message Edited SuccessFully');
     }
 
     // Make a PUT request to update the message content
@@ -181,6 +193,8 @@ export class UserListComponent implements OnInit {
       (response: any) => {
         // On successful response, update the message in the conversation history
         messageToUpdate.content = editedContent;
+        this.editedMessageContent = ''; // Clear the textarea content
+        this.isEditingPlaceholderVisible = true; // Show the placeholder again
 
         // Clear the editingMessageId after accepting the edit
         this.editingMessageId = null;
@@ -209,7 +223,7 @@ export class UserListComponent implements OnInit {
     this.contextMenuX = event.pageX + 'px';
     this.contextMenuY = event.pageY + 'px';
     // Set the deletingMessageId to the current message id
-    this.deletingMessageId = message.id;
+    this.deletingMessageId = message.messageId;
   }
 
 
@@ -222,10 +236,10 @@ export class UserListComponent implements OnInit {
     const isConfirmed = confirm('Are you sure you want to delete this message?');
     if (isConfirmed) {
       // Make a DELETE request to delete the message
-      this.userService.deleteMessage(message.id).subscribe(
+      this.userService.deleteMessage(message.messageId).subscribe(
         () => {
           // On successful response, remove the deleted message from the conversation
-          this.removeMessage(message.id);
+          this.removeMessage(message.messageId);
         },
         (error: any) => {
           // Handle error, display relevant error message to the user
@@ -238,7 +252,7 @@ export class UserListComponent implements OnInit {
 
   // Method to remove a message from the conversation history
   private removeMessage(messageId: string): void {
-    const messageIndex = this.Msg.findIndex((msg) => msg.id === messageId);
+    const messageIndex = this.Msg.findIndex((msg) => msg.messageId === messageId);
     if (messageIndex !== -1) {
       this.Msg.splice(messageIndex, 1);
     }

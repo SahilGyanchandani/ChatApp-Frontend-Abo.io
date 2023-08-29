@@ -1,7 +1,10 @@
 export interface ApiLog {
-    id: number;
-    ipAddress: string;
-    requestBody: string;
-    timeStamp: Date;
-    email: string;
-} 
+    id: string,
+    userId: string,
+    userName: string,
+    clientIpAddress: string,
+    action: string,
+    applicationName: string,
+    browserInfo: string,
+    creationTime: string
+}

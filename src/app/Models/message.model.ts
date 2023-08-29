@@ -1,15 +1,15 @@
 export interface Message {
-  messageID: string;
+  messageId: string;
   content: string;
-  userId: string;
-  receiverID: string;
-  id: string;
+  senderId: string;
+  receiverId: string;
+  // id: string;
   timestamp: any;
 }
 
 export interface MessageSend {
   content: string;
-  receiverID: string;
+  receiverId: string;
 }
 
 // export interface MessageDto {

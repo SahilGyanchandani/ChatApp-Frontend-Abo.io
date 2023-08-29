@@ -1,9 +1,14 @@
+.logout-button-container {
+  position: fixed;
+  top: 1px; /* Adjust the value to control the distance from the top */
+  right: 10px; /* Adjust the value to control the distance from the right */
+}
+
 .search-container {
   display: flex;
-  align-items: center; /* Vertically center the elements */
+  align-items: center;  /* Vertically center the elements */
   max-width: 70%;
   margin: 0 auto;
-
 }
 
 .form-control {
@@ -17,7 +22,7 @@
 
 img{
   height: 25px;
-  width: 25px;  
+  width: 25px;
 }
 ul{
     list-style: none;
@@ -35,7 +40,7 @@ ul{
     border-right: 1px solid #ccc; /* Add a border between the two containers */
     overflow-y: auto; /* Enable vertical scrolling if needed */
   }
-  
+
   .user-item {
     display: flex;
     align-items: center;
@@ -44,39 +49,39 @@ ul{
     border-bottom: 1px solid #ccc;
     transition: background-color 0.3s ease; /* Add transition effect for hover */
   }
-  
+
   .user-item:hover {
     background-color: #e7e5e5; /* Add background color on hover */
   }
-  
+
   .user-avatar {
     margin-right: 10px;
   }
-  
+
   .user-avatar img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
   }
-  
+
   .user-name {
     font-weight: bold;
   }
-  
+
   .user-list::-webkit-scrollbar {
     width: 8px;
   }
-  
+
   .user-list::-webkit-scrollbar-track {
     background-color: #f1f1f1;
   }
-  
+
   .user-list::-webkit-scrollbar-thumb {
     background-color: #888;
     border-radius: 4px;
   }
-  
+
   .user-list::-webkit-scrollbar-thumb:hover {
     background-color: #555;
   }
@@ -88,19 +93,19 @@ ul{
     flex: 1; /* Allow this container to occupy remaining space */
     overflow-y: auto; /* Enable vertical scrolling if needed */
   }
-  
+
   .message-content {
     padding: 8px;
     margin: 4px;
     border-radius: 8px;
     font-family: Arial, sans-serif;
   }
-  
+
   .message-right {
     background-color: #dcf8c6; /* Light green color for sender's messages */
     text-align: right;
   }
-  
+
   .message-left {
     background-color: #ffffff; /* Light gray color for receiver's messages */
     text-align: left;

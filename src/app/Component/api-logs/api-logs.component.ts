@@ -17,7 +17,7 @@ export class ApiLogsComponent implements OnInit {
     { label: 'Last 30 mins', value: 'last30' },
     { label: 'Default', value: 'Default' },
   ];
-  displayedColumns: string[] = ['id', 'ipAddress', 'requestBody', 'timestamp', 'email'];
+  displayedColumns: string[] = ['id', 'userId', 'userName', 'clientIpAddress', 'action', 'applicationName', 'browserInfo', 'creationTime'];
 
   constructor(private logService: LoginServiceService) { }
 
@@ -52,10 +52,12 @@ export class ApiLogsComponent implements OnInit {
 
   getLogsByTimeRange(startTime: Date, endTime?: Date): void {
     this.logService.getApiLogs().subscribe((logs) => {
+      console.log(logs);
+
       if (endTime) {
-        this.logs = logs.filter((log) => new Date(log.timeStamp) >= startTime && new Date(log.timeStamp) <= endTime);
+        this.logs = logs.filter((log) => new Date(log.creationTime) >= startTime && new Date(log.creationTime) <= endTime);
       } else {
-        this.logs = logs.filter((log) => new Date(log.timeStamp) >= startTime);
+        this.logs = logs.filter((log) => new Date(log.creationTime) >= startTime);
       }
     });
   }
