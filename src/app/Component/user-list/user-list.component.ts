@@ -3,6 +3,7 @@ import { LoginServiceService } from 'src/app/Services/login-service.service';
 import { Message, MessageSend } from 'src/app/Models/message.model';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Router } from '@angular/router';
+import * as signalR from '@microsoft/signalr';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class UserListComponent implements OnInit {
   contextMenuX: string = '0';
   contextMenuY: string = '0';
   private connection!: HubConnection;
+  localToken: any = localStorage.getItem('token');
 
 
   constructor(private userService: LoginServiceService, private route: Router) {
@@ -40,10 +42,11 @@ export class UserListComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    const localToken = localStorage.getItem('token');
+
     this.connection = new HubConnectionBuilder()
 
-      .withUrl(`https://localhost:7277/chat?access_token=${localToken}`)
+      .withUrl(`https://localhost:44378/chat`, { accessTokenFactory: () => this.localToken })
+      .configureLogging(signalR.LogLevel.Information)
       .build();
 
 
@@ -144,11 +147,11 @@ export class UserListComponent implements OnInit {
     this.userService.sendMessage(newMsg).subscribe(
       (response: Message) => {
         this.newMessage = '';
-        // this.connection.invoke('SendMsg', newMsg)
+        this.connection.invoke('SendMessage', response)
 
-        //   .then(() => {
-        //     console.log('Message sent successfully');
-        //   })
+          .then(() => {
+            console.log('Message sent successfully');
+          })
         this.Msg.push(response);
         console.log(response);
 
