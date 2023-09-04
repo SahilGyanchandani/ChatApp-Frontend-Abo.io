@@ -115,7 +115,7 @@ export class UserListComponent implements OnInit {
     this.location.replaceState(`userlist/receiverId/${user.id}`)
     this.userService.onMsgHistory(user.id).subscribe((data: any) => {
       console.log('Data from API:', data);
-      wsdmskdskl; dklskldklsdklskldskldlksdl; s
+
       this.Msg = data; // Assign the array of messages to Msg
       this.selectedUserId = user.id; // Set the selectedUserId to the receiver's userId
       console.log('Msg array:', this.Msg);
