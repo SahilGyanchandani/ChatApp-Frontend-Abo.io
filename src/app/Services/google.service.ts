@@ -27,7 +27,7 @@ export class GoogleService {
   }
 
   externalLogin(googleUser: ExternalAuthDto): Observable<any> {
-    return this.http.post<any>(`https://localhost:7277/api/UserLogin/GoogleAuthenticate`, googleUser);
+    return this.http.post<any>(`https://localhost:44378/api/app/google-authentication/authenticate-google-user`, googleUser);
   }
 }
 

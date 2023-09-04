@@ -4,6 +4,7 @@ import { Message, MessageSend } from 'src/app/Models/message.model';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class UserListComponent implements OnInit {
   localToken: any = localStorage.getItem('token');
 
 
-  constructor(private userService: LoginServiceService, private route: Router) {
+  constructor(private userService: LoginServiceService, private route: Router, private location: Location) {
     this.userService.onUserList().subscribe((data) => {
       this.Users = data;
       console.log(this.Users);
@@ -46,7 +47,6 @@ export class UserListComponent implements OnInit {
     this.connection = new HubConnectionBuilder()
 
       .withUrl(`https://localhost:44378/chat`, { accessTokenFactory: () => this.localToken })
-      .configureLogging(signalR.LogLevel.Information)
       .build();
 
 
@@ -112,9 +112,10 @@ export class UserListComponent implements OnInit {
   }
 
   getUserConversation(user: any): void {
+    this.location.replaceState(`userlist/receiverId/${user.id}`)
     this.userService.onMsgHistory(user.id).subscribe((data: any) => {
       console.log('Data from API:', data);
-
+      wsdmskdskl; dklskldklsdklskldskldlksdl; s
       this.Msg = data; // Assign the array of messages to Msg
       this.selectedUserId = user.id; // Set the selectedUserId to the receiver's userId
       console.log('Msg array:', this.Msg);

@@ -93,8 +93,8 @@ export class LoginComponent {
   private validateExternalAuth(externalAuth: ExternalAuthDto) {
     this.googleService.externalLogin(externalAuth).subscribe({
       next: (res) => {
-        localStorage.setItem("token", res.token);
-        // console.log('res', res.token);
+        // localStorage.setItem("token", res.token);
+        // // console.log('res', res.token);
         this.route.navigateByUrl('/userlist');
       },
       error: (err: HttpErrorResponse) => {
