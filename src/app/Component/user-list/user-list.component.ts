@@ -37,8 +37,7 @@ export class UserListComponent implements OnInit {
   constructor(private userService: LoginServiceService, private route: Router, private location: Location) {
     this.userService.onUserList().subscribe((data) => {
       this.Users = data;
-      console.log(this.Users);
-
+      // console.log(this.Users);
     });
 
   }
@@ -52,21 +51,34 @@ export class UserListComponent implements OnInit {
 
     this.connection.start()
       .then(() =>
-        console.log('conn start'))
+        console.log(' SignalR conn start'))
       .catch(err => {
-        console.log('error in conn')
+        console.log('error in SignalR conn')
       });
 
     this.connection.on('Broadcast', (message) => {
-      message.id = message.messageID;
-      // console.log(message.messageID);
       this.Msg.push(message);
-      // console.log(message.id);
-      console.log(this.Msg);
+
       // Scroll to the bottom when user send or receive the mesaage
       this.scrollToBottom();
 
     })
+
+    this.connection.on('editMsgSignalR', (editMessage) => {
+      // Find and update the edited message in your array of messages (this.Msg).
+      const index = this.Msg.findIndex(msg => msg.messageId === editMessage.messageId);
+      if (index !== -1) {
+        this.Msg[index] = editMessage;
+      }
+    });
+
+    this.connection.on('DeleteMsgSignalR', (deletedMessageId) => {
+      // Find and remove the deleted message from your array of messages (this.Msg).
+      const index = this.Msg.findIndex(msg => msg.messageId === deletedMessageId.messageId);
+      if (index !== -1) {
+        this.Msg.splice(index, 1);
+      }
+    });
   }
 
   logout() {
@@ -114,11 +126,11 @@ export class UserListComponent implements OnInit {
   getUserConversation(user: any): void {
     this.location.replaceState(`userlist/receiverId/${user.id}`)
     this.userService.onMsgHistory(user.id).subscribe((data: any) => {
-      console.log('Data from API:', data);
+      // console.log('Data from API:', data);
 
       this.Msg = data; // Assign the array of messages to Msg
       this.selectedUserId = user.id; // Set the selectedUserId to the receiver's userId
-      console.log('Msg array:', this.Msg);
+      // console.log('Msg array:', this.Msg);
 
       // Scroll to the bottom of the conversation
       this.scrollToBottom();
@@ -149,12 +161,11 @@ export class UserListComponent implements OnInit {
       (response: Message) => {
         this.newMessage = '';
         this.connection.invoke('SendMessage', response)
-
-          .then(() => {
-            console.log('Message sent successfully');
-          })
+        // .then(() => {
+        //   // console.log('Message sent successfully');
+        // })
         this.Msg.push(response);
-        console.log(response);
+        // console.log(response);
 
         // console.log(newMsg);
 
@@ -195,6 +206,11 @@ export class UserListComponent implements OnInit {
     // Make a PUT request to update the message content
     this.userService.updateMessage(id, editedContent).subscribe(
       (response: any) => {
+        this.connection.invoke('EditMessage', response)
+        // .then(() => {
+        //   console.log('Message Edit successfully');
+        // })
+
         // On successful response, update the message in the conversation history
         messageToUpdate.content = editedContent;
         this.editedMessageContent = ''; // Clear the textarea content
@@ -241,9 +257,19 @@ export class UserListComponent implements OnInit {
     if (isConfirmed) {
       // Make a DELETE request to delete the message
       this.userService.deleteMessage(message.messageId).subscribe(
-        () => {
-          // On successful response, remove the deleted message from the conversation
-          this.removeMessage(message.messageId);
+        (response) => {
+          this.newMessage = '';
+          this.connection.invoke('DeleteMessage', message)
+
+          // .then(() => {
+          //   // console.log('Message Deleted successfully');
+          // })
+
+          if (response) {
+            // On successful response, remove the deleted message from the conversation
+            this.removeMessage(message.messageId);
+          }
+
         },
         (error: any) => {
           // Handle error, display relevant error message to the user

@@ -25,7 +25,6 @@ export class LoginComponent {
   isLogging: boolean | undefined;
 
 
-
   constructor(private logService: LoginServiceService, private route: Router, private formBuilder: FormBuilder,
     private authService: SocialAuthService, private googleService: GoogleService) { }
 
@@ -54,11 +53,11 @@ export class LoginComponent {
     if (this.regisform.invalid) {
       throw new Error("Please Enter Valid Values");
     }
-    console.log(this.regisform.value);
+    // console.log(this.regisform.value);
 
     this.logService.onSubmit(this.regisform.value).subscribe(res => {
-      console.log('res', res);
-      console.log(this.regisform.value);
+      // console.log('res', res);
+      // console.log(this.regisform.value);
 
       localStorage.setItem('token', res.access_token);
       this.route.navigateByUrl('/userlist');
