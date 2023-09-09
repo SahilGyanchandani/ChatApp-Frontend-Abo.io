@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { LoginServiceService } from 'src/app/Services/login-service.service';
 import { Message, MessageSend } from 'src/app/Models/message.model';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
 import { Location } from '@angular/common';
+import { combineLatest } from 'rxjs';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class UserListComponent implements OnInit {
   searchResults: Message[] = []; // Holds the list of messages that match the search query
   Users: any;
   Msg: Message[] = []; // Initialize Msg as an empty array
+  beforeTimestamp: Date | undefined;
   sendMsg: MessageSend[] = [];
   newMessage: string = ''; // Holds the message content from the textbox
   selectedUserId: string | null = null; // The receiver's userID
@@ -32,7 +34,8 @@ export class UserListComponent implements OnInit {
   contextMenuY: string = '0';
   private connection!: HubConnection;
   localToken: any = localStorage.getItem('token');
-
+  isLoading!: boolean;
+  @ViewChild('messageContainer') messageContainer!: ElementRef;
 
   constructor(private userService: LoginServiceService, private route: Router, private location: Location) {
     this.userService.onUserList().subscribe((data) => {
@@ -124,9 +127,11 @@ export class UserListComponent implements OnInit {
   }
 
   getUserConversation(user: any): void {
-    this.location.replaceState(`userlist/receiverId/${user.id}`)
+    //this.location.replaceState(`userlist/receiverId/${user.id}`)
     this.userService.onMsgHistory(user.id).subscribe((data: any) => {
       // console.log('Data from API:', data);
+
+      this.isLoading = false;
 
       this.Msg = data; // Assign the array of messages to Msg
       this.selectedUserId = user.id; // Set the selectedUserId to the receiver's userId
@@ -137,6 +142,49 @@ export class UserListComponent implements OnInit {
 
     });
   }
+
+  loadOlderMessages(event: Event): void {
+    const container = this.messageContainer.nativeElement;
+    const scrollPositionBefore = container.scrollHeight - container.clientHeight;
+
+    // Check if the user has scrolled to the top of the container
+    if (container.scrollTop === 0 && !this.isLoading) { // Check isLoading flag
+      // Show the loading indicator
+      this.isLoading = true;
+
+      // Add a delay (e.g., 1 second) before loading older messages
+      setTimeout(() => {
+        // Load older messages from the backend
+        this.userService.loadOlderMessages(this.selectedUserId!, this.Msg[0].timestamp)
+          .subscribe((data: any) => {
+            // Check if there are no more messages to load
+            if (data.length === 0) {
+              // Hide the loading indicator
+              this.isLoading = false;
+              return;
+            }
+
+            // Prepend the older messages to the beginning of the message array
+            this.Msg = data.concat(this.Msg);
+
+            // Scroll to maintain the user's current position
+            setTimeout(() => {
+              const scrollPositionAfter = container.scrollHeight - container.clientHeight;
+              const scrollDifference = scrollPositionAfter - scrollPositionBefore;
+
+              // Adjust the scroll position to stay at the same relative position
+              container.scrollTop = scrollDifference;
+
+              // Hide the loading indicator
+              this.isLoading = false;
+            }, 0);
+          });
+      }, 1000); // 1000 milliseconds (1 second) delay before loading
+    }
+  }
+
+
+
 
 
   getUserById(userId: string): any {
@@ -294,7 +342,7 @@ export class UserListComponent implements OnInit {
     this.deletingMessageId = null;
   }
 
-  private scrollToBottom(Msg: Message[] = []): void {
+  private scrollToBottom(): void {
     setTimeout(() => {
       const messageContainer = document.querySelector('.message-container');
       if (messageContainer) {

@@ -140,3 +140,22 @@ ul{
     resize: none;
     width: 90%;
   }
+
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #007bff; /* Change the color as needed */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin: auto;
+    animation: spin 1s linear infinite; /* Adjust the animation duration as needed */
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .loading-indicator
+  {
+    margin: auto;
+  }

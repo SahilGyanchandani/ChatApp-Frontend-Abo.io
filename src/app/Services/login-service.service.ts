@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MessageSend } from '../Models/message.model';
+import { Message, MessageSend } from '../Models/message.model';
 
 import { ApiLog } from '../Models/Apilog.model';
 
@@ -46,6 +46,11 @@ export class LoginServiceService {
 
   onMsgHistory(userid: any): Observable<any> {
     return this.http.get<any>(`https://localhost:44378/api/app/message/conversation-history/${userid}?count=20&sort=asc`);
+  }
+
+  loadOlderMessages(receiverId: string, beforeTimestamp: Date): Observable<any[]> {
+    // Make an HTTP GET request to your API to load older messages
+    return this.http.get<any[]>(`https://localhost:44378/api/app/message/conversation-history/${receiverId}?before=${beforeTimestamp}&count=20&sort=asc`);
   }
 
   sendMessage(message: MessageSend): Observable<any> {

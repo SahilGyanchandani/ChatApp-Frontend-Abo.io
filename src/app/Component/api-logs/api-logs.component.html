@@ -1,5 +1,7 @@
 <h1>Request Logs</h1>
-
+<div class="back-button-container">
+  <button class="btn btn-primary" (click)="Back()">Back</button>
+</div>
 <mat-form-field>
   <mat-label>Select Timeframe</mat-label>
   <mat-select [(ngModel)]="selectedTimeframe" (ngModelChange)="loadLogs()">

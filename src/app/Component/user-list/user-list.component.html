@@ -41,7 +41,16 @@
         {{ getUserById(selectedUserId)?.userName }}
       </div>
     </div>
-    <div class="message-container">
+    <div
+      class="message-container"
+      #messageContainer
+      (scroll)="loadOlderMessages($event)"
+    >
+      <div *ngIf="isLoading" class="loading-indicator">
+        <!-- Add spinner indicator here -->
+        <div class="spinner"></div>
+        Loading...
+      </div>
       <!-- Display the search results if there is a search query, otherwise display the normal conversation  -->
       <div
         *ngFor="let message of searchQuery ? searchResults : Msg"

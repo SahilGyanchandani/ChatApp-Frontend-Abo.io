@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Route, Router } from '@angular/router';
 import { ApiLog } from 'src/app/Models/Apilog.model';
 import { LoginServiceService } from 'src/app/Services/login-service.service';
 
@@ -19,10 +20,13 @@ export class ApiLogsComponent implements OnInit {
   ];
   displayedColumns: string[] = ['id', 'ipAddress', 'requestBody', 'timestamp', 'userName'];
 
-  constructor(private logService: LoginServiceService) { }
+  constructor(private logService: LoginServiceService, private route: Router) { }
 
   ngOnInit(): void {
     this.loadLogs();
+  }
+  Back() {
+    this.route.navigateByUrl('/userlist');
   }
 
   loadLogs(): void {
