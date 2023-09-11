@@ -148,7 +148,7 @@ export class UserListComponent implements OnInit {
     const scrollPositionBefore = container.scrollHeight - container.clientHeight;
 
     // Check if the user has scrolled to the top of the container
-    if (container.scrollTop === 0 && !this.isLoading) { // Check isLoading flag
+    if (container.scrollTop === 0 && !this.isLoading && this.Msg.length > 19) { // Check isLoading flag
       // Show the loading indicator
       this.isLoading = true;
 
@@ -157,6 +157,8 @@ export class UserListComponent implements OnInit {
         // Load older messages from the backend
         this.userService.loadOlderMessages(this.selectedUserId!, this.Msg[0].timestamp)
           .subscribe((data: any) => {
+            console.log(data);
+
             // Check if there are no more messages to load
             if (data.length === 0) {
               // Hide the loading indicator
@@ -182,10 +184,6 @@ export class UserListComponent implements OnInit {
       }, 1000); // 1000 milliseconds (1 second) delay before loading
     }
   }
-
-
-
-
 
   getUserById(userId: string): any {
     return this.Users.find((user: any) => user.id === userId);
@@ -347,6 +345,7 @@ export class UserListComponent implements OnInit {
       const messageContainer = document.querySelector('.message-container');
       if (messageContainer) {
         messageContainer.scrollTop = messageContainer.scrollHeight;
+
       }
     });
   }
