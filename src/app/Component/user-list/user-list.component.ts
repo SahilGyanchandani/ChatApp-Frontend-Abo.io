@@ -65,7 +65,7 @@ export class UserListComponent implements OnInit {
       // Scroll to the bottom when user send or receive the mesaage
       this.scrollToBottom();
 
-    })
+    });
 
     this.connection.on('editMsgSignalR', (editMessage) => {
       // Find and update the edited message in your array of messages (this.Msg).
@@ -127,7 +127,7 @@ export class UserListComponent implements OnInit {
   }
 
   getUserConversation(user: any): void {
-    //this.location.replaceState(`userlist/receiverId/${user.id}`)
+    this.location.replaceState(`userlist/receiverId/${user.id}`)
     this.userService.onMsgHistory(user.id).subscribe((data: any) => {
       // console.log('Data from API:', data);
 
@@ -157,7 +157,7 @@ export class UserListComponent implements OnInit {
         // Load older messages from the backend
         this.userService.loadOlderMessages(this.selectedUserId!, this.Msg[0].timestamp)
           .subscribe((data: any) => {
-            console.log(data);
+            // console.log(data);
 
             // Check if there are no more messages to load
             if (data.length === 0) {
